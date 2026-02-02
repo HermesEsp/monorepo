@@ -1,9 +1,7 @@
 name: CI
-
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
 
 permissions:
@@ -25,9 +23,17 @@ jobs:
 
       - run: npm ci
 
-      # Verifica se o código está formatado corretamente (Prettier)
-      - run: npx nx format:check
+      - name: Initialize Nx Graph
+        run: npx nx reset
+        env:
+          NX_DAEMON: false
 
-      # Executa Lint, Test e Build apenas no que foi alterado (Affected)
-      # Isso economiza tempo e recursos no GitHub Actions
-      - run: npx nx affected -t lint test build
+      - name: Check Formatting
+        run: npx nx format:check
+        env:
+          NX_DAEMON: false
+
+      - name: Affected Lint, Test, Build
+        run: npx nx affected -t lint test build
+        env:
+          NX_DAEMON: false
