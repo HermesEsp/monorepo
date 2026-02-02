@@ -1,102 +1,66 @@
-# New Nx Repository
+# 🏗️ Enterprise Monorepo - Frontend Architecture Study
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+Este repositório é um projeto de estudo de **Arquitetura Frontend Avançada**, focado na construção de sistemas escaláveis e **totalmente agnósticos ao provedor de dados**. A fundação foi desenhada para que a interface e as regras de negócio sejam independentes da infraestrutura, estando preparada para integração transparente com **APIs REST, gRPC, BaaS (Firebase/Supabase)** ou serviços de backend diversos.
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is ready ✨.
+## 🎯 Objetivos do Projeto
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/nx-api/js?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!## Generate a library
+Desenvolver um ecossistema de **Gestão de Empresas** utilizando **Nx** para demonstrar:
 
-```sh
-npx nx g @nx/js:lib packages/pkg1 --publishable --importPath=@my-org/pkg1
-```
+- **Arquitetura Plug-and-Play:** Capacidade de trocar o provedor de backend (ex: mudar de uma API Mock para uma API real em Go) alterando apenas uma linha na camada de Infraestrutura.
+- **Independência de Framework:** Regras de negócio protegidas na camada de Domínio, puramente em TypeScript.
+- **Consistência de Código:** Padronização rigorosa com ESLint (Rules Sênior) e Prettier.
+- **Qualidade e Segurança:** Automação de ganchos de commit (Git Hooks) com Husky para garantir integridade.
 
-## Run tasks
+## 🛠️ Stack Tecnológica & Padrões
 
-To build the library use:
+- **Monorepo:** [Nx](https://nx.dev) (Preset Minimal)
+- **Arquitetura:** Clean Architecture / Hexagonal (Screaming Architecture)
+- **Padronização:** ESLint (Flat Config) + Prettier
+- **Garantia de Qualidade:** Husky + Lint-staged (Em configuração 🚧)
+- **Core:** TypeScript 5.x + Angular (Standalone)
 
-```sh
-npx nx build pkg1
-```
+---
 
-To run any task with Nx use:
+## 🏛️ Organização da Solução (`libs/`)
 
-```sh
-npx nx <target> <project-name>
-```
+A estrutura foi pensada para desacoplar a "intenção" da "implementação":
 
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
+1. **`shared/domain`**: O coração do sistema. Define as **Interfaces (Contracts)** e **Use Cases**. É aqui que o sistema "diz o que faz" sem saber "como é feito". **Zero dependências de bibliotecas externas.**
+2. **`shared/infra`**: A camada de tradução. Aqui implementamos os Repositórios reais que falam com APIs, Firebase ou LocalStorage. É o único lugar que conhece detalhes de rede ou persistência.
+3. **`shared/ui`**: Design System e componentes puramente visuais (Dumb Components).
+4. **`shared/utils`**: Helpers e funções puras de suporte.
 
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+---
 
-## Versioning and releasing
+## 🚀 Plano de Ação (Roadmap até 31/03)
 
-To version and release the library use
+### Fase 1: Fundação & Domínio (Concluído ✅)
 
-```
-npx nx release
-```
+- [x] Configuração do Workspace Nx Minimal.
+- [x] Padronização de Linting (Rules Sênior: ponto e vírgula, no-var, etc).
+- [x] Modelagem do Domínio de Empresa (`Company`, `CompanyRepository`).
+- [x] Criação de Use Cases de Negócio.
 
-Pass `--dry-run` to see what would happen without actually releasing the library.
+### Fase 2: Infraestrutura & Adaptadores (Próximo Passo 🏃)
 
-[Learn more about Nx release &raquo;](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+- [ ] Implementação de Git Hooks (Husky + Lint-staged).
+- [ ] Criação do `InMemoryCompanyRepository` (Mock para desenvolvimento offline).
+- [ ] Preparação do `HttpCompanyRepository` (Pronto para consumo de API externa).
+- [ ] Configuração de Injeção de Dependência para troca dinâmica de adaptadores.
 
-## Keep TypeScript project references up to date
+### Fase 3: Frontend Angular (Dashboard)
 
-Nx automatically updates TypeScript [project references](https://www.typescriptlang.org/docs/handbook/project-references.html) in `tsconfig.json` files to ensure they remain accurate based on your project dependencies (`import` or `require` statements). This sync is automatically done when running tasks such as `build` or `typecheck`, which require updated references to function correctly.
+- [ ] Geração da aplicação `apps/dash`.
+- [ ] Consumo da camada de Domínio através da Injeção de Dependência da Infra.
+- [ ] Desenvolvimento de UI Components na `shared-ui`.
 
-To manually trigger the process to sync the project graph dependencies information to the TypeScript project references, run the following command:
+---
 
-```sh
-npx nx sync
-```
+## 🛠️ Como executar
 
-You can enforce that the TypeScript project references are always in the correct state when running in CI by adding a step to your CI job configuration that runs the following command:
+1. Instale as dependências: `npm install`
+2. Rode o lint para verificar o padrão: `npx nx lint shared-domain`
 
-```sh
-npx nx sync:check
-```
+---
 
-[Learn more about nx sync](https://nx.dev/reference/nx-commands#sync)
-
-## Nx Cloud
-
-Nx Cloud ensures a [fast and scalable CI](https://nx.dev/ci/intro/why-nx-cloud?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) pipeline. It includes features such as:
-
-- [Remote caching](https://nx.dev/ci/features/remote-cache?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task distribution across multiple machines](https://nx.dev/ci/features/distribute-task-execution?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Automated e2e test splitting](https://nx.dev/ci/features/split-e2e-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task flakiness detection and rerunning](https://nx.dev/ci/features/flaky-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-### Set up CI (non-Github Actions CI)
-
-**Note:** This is only required if your CI provider is not GitHub Actions.
-
-Use the following command to configure a CI workflow for your workspace:
-
-```sh
-npx nx g ci-workflow
-```
-
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Install Nx Console
-
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
-
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Useful links
-
-Learn more:
-
-- [Learn more about this workspace setup](https://nx.dev/nx-api/js?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-And join the Nx community:
-
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+> **Nota de Estudo:** Este projeto simula um ambiente corporativo real, onde a agilidade de trocar o "motor" (backend) sem quebrar o "carro" (frontend) é um diferencial técnico de alto nível.
